@@ -14,13 +14,9 @@ var Faceplate = function(options) {
 
   this.middleware = function() {
     return function(req, res, next) {
-      if (req.body.signed_request) {
-        self.parse_signed_request(req.body.signed_request, function(decoded_signed_request) {
-          req.facebook = new FaceplateSession(self, decoded_signed_request);
-          next();
-        });
-      } else if (req.cookies["fbsr_" + self.app_id]) {
-        self.parse_signed_request(req.cookies["fbsr_" + self.app_id], function(decoded_signed_request) {
+      var signed_request = req.body.signed_request || req.cookies["fbsr_" + self.app_id];
+      if (signed_request) {
+        self.parse_signed_request(signed_request, function(decoded_signed_request) {
           req.facebook = new FaceplateSession(self, decoded_signed_request);
           next();
         });
@@ -175,3 +171,5 @@ var FaceplateSession = function(plate, signed_request) {
 module.exports.middleware = function(options) {
   return new Faceplate(options).middleware();
 }
+
+module.exports.Faceplate = Faceplate;
