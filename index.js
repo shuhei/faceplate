@@ -27,6 +27,10 @@ var Faceplate = function(options) {
     }
   }
 
+  this.createSession = function(signed_request) {
+    return new FaceplateSession(self, signed_request);
+  }
+
   this.parse_signed_request = function(signed_request, cb) {
     var encoded_data = signed_request.split('.', 2);
 
